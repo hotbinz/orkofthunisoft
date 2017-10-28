@@ -42,13 +42,13 @@
 <script>
     export default {
         methods: {
-            handleStart () {
+            handleStart () {                
                 this.$router.push({ path: '/prod' });
             }            
         },
         mounted(){
             setTimeout(function (_this) {
-                _this.$router.push({ path: '/prod' });
+                _this.handleStart();
             }, 1000, this)
         }
     }

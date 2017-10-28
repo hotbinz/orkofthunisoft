@@ -12,9 +12,13 @@ Vue.use(VueRouter);
 Vue.use(VueResource);
 Vue.use(iView);
 
+var state = {
+    isLogin : '100'
+}
+
 //基础配置
-const ResourceConfig = {
-    ApiURL : "http://www.baidu.com"
+Vue.prototype.Const = {
+    ApiURL : "/OKRsThunisoft"
 }
 
 // 路由配置
@@ -22,21 +26,34 @@ const RouterConfig = {
     mode: 'history',
     routes: Routers
 };
+
 const router = new VueRouter(RouterConfig);
 
 router.beforeEach((to, from, next) => {
     iView.LoadingBar.start();
     Util.title(to.meta.title);
-    next();
+    //是否登录验证
+    if(to.matched.some(m=>m.meta.auth)) {
+        if(state.isLogin == "100") {
+            next();
+        }
+        else {
+            next({path:'/login',query:{Rurl:to.fullPath}});
+        }
+    }
+    else {
+        next();
+    }    
 });
 
 router.afterEach((to, from, next) => {
     iView.LoadingBar.finish();
     window.scrollTo(0, 0);
 });
-
-new Vue({
+window.Hub = new Vue(); //创建事件中心
+var vue = new Vue({
     el: '#app',
     router: router,
     render: h => h(App)
 });
+state.isLogin == "100";

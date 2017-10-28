@@ -97,7 +97,7 @@
                         <DropdownMenu slot="list">
                             <DropdownItem @click.native="onSelectProject('所有项目')">所有项目</DropdownItem>
                             <template v-for="(data,index) in dataItem">
-                            <DropdownItem @click.native="onSelectProject(data.CName)">{{data.CName}}</DropdownItem>
+                            <DropdownItem @click.native="onSelectProject(data.cname)">{{data.cname}}</DropdownItem>
                             </template>
                             <DropdownItem divided @click.native="showNewProjectModal">新建项目</DropdownItem>
                         </DropdownMenu>
@@ -130,7 +130,7 @@
                         </div>
                     </Card>
                     <Card style="margin-top:15px;">
-                        <timeline style="margin-top:15px;"></timeline>
+                        <TimeLine style="margin-top:15px;"></TimeLine>
                     </Card>
                 </Col>
                 <Col span="19">
@@ -144,9 +144,9 @@
                             <Button icon="navicon-round"></Button>        
                         </ButtonGroup>
                     </div>
-                    <myokrTable ref="myokrTable" style="margin-top:15px;"></myokrTable>
-                    <div style="text-align: center;padding:50px;">
-                        <Button type="info" shape="circle" icon="ios-plus-outline" size="large" @click="showNewOkrModal">创建OKR</Button>
+                    <Objectives ref="objectives" style="margin-top:15px;"></Objectives>
+                    <div style="text-align: center;padding:30px;">
+                        <Button type="info" shape="circle" icon="ios-plus-outline" size="large" @click="showNewObjectiveModal">创建OKR</Button>
                     </div>                    
                 </Col>
             </Row>
@@ -154,58 +154,52 @@
         <div class="layout-copy">
             2017-2017 &copy; THUNISOFT
         </div>
-        <createProject ref="createProjectModel"></createProject>
-        <createOkr ref="createOkrModel"></createOkr>
+        <NewProjectModal ref="newProjectModal"></NewProjectModal>
+        <NewObjectiveModal ref="newObjectiveModal"></NewObjectiveModal>
     </div>
 </template>
 <script>
-    import myokrTable from './myokrTable.vue'
-    import timeline from './timeline.vue'
-    import createProject from './createProject.vue'
-    import createOkr from './createOkr.vue'
+    import Objectives from './Objectives.vue'
+    import TimeLine from './TimeLine.vue'
+    import NewProjectModal from './NewProjectModal.vue'
+    import NewObjectiveModal from './NewObjectiveModal.vue'
     export default {
         data() {
-            return {currentProject:'所有项目',dataItem:[],today:{yyyyMM:"",dd:"",EEEE:""}}
+            return {currentProject:'所有项目',dataItem:[],today:{yyyyMM:"",dd:"",eeee:""}}
+        },
+        mounted () {
+           this.getAllMyProject ();
+           this.getSchedule();
         },
         methods: {
             showNewProjectModal () {
-                this.$refs.createProjectModel.show();
+                this.$refs.newProjectModal.show();
             },
-            showNewOkrModal () {
-                this.$refs.createOkrModel.show();
+            showNewObjectiveModal () {
+                this.$refs.newObjectiveModal.show();
             },
             onSelectProject (t,d) {
                 this.currentProject = t;
                 //console.info(t,d);
             },
             getAllMyProject () {
-                this.$http.get("/OKRsThunisoft/api/project").then((result)=>{
+                this.$http.get(this.Const.ApiURL + "/api/project").then((result)=>{
                     for(var data in result.data) {
                         this.dataItem.push(result.data[data]);
                     }
                 });
             },
             getSchedule () {
-                this.$http.get("/OKRsThunisoft/api/schedule").then((result)=>{
+                this.$http.get(this.Const.ApiURL + "/api/schedule").then((result)=>{
                     this.today = result.data.today;
                 });
-            },
-            getOkrlist () {
-                this.$http.get("/OKRsThunisoft/api/okr").then((result)=>{
-                    this.$refs.myokrTable.setOkrList(result.data);
-                });
-            }
-        },
-        mounted () {
-           this.getAllMyProject ();
-           this.getSchedule();
-           this.getOkrlist();
+            }            
         },
         components: {
-            myokrTable,
-            timeline,
-            createProject,
-            createOkr
+            Objectives,
+            TimeLine,
+            NewProjectModal,
+            NewObjectiveModal
         }
     }
 </script>
