@@ -83,7 +83,7 @@
         <Menu mode="horizontal" theme="dark" active-name="1">
             <div class="layout-topnav">
                 <div class="layout-logo">
-                    OKRs
+                    OKR of
                 </div>
                 <div class="layout-logo-text">
                     Thunisoft
@@ -97,14 +97,14 @@
                         <DropdownMenu slot="list">
                             <DropdownItem @click.native="onSelectProject('所有项目')">所有项目</DropdownItem>
                             <template v-for="(data,index) in dataItem">
-                            <DropdownItem @click.native="onSelectProject(data.cname)">{{data.cname}}</DropdownItem>
+                            <DropdownItem @click.native="onSelectProject(data.cname,data.cid)">{{data.cname}}</DropdownItem>
                             </template>
                             <DropdownItem divided @click.native="showNewProjectModal">新建项目</DropdownItem>
                         </DropdownMenu>
                     </Dropdown>
                 </div>
                 <div class="layout-ceiling-main">
-                    <Avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg" />
+                    <Avatar :src="avatar" />
                 </div>
             </div>            
         </Menu>
@@ -164,8 +164,13 @@
     import NewProjectModal from './NewProjectModal.vue'
     import NewObjectiveModal from './NewObjectiveModal.vue'
     export default {
+        created() {
+            Hub.$on('reloadproject', () => { //Hub接收事件
+                this.getAllMyProject();
+            });
+        },
         data() {
-            return {currentProject:'所有项目',dataItem:[],today:{yyyyMM:"",dd:"",eeee:""}}
+            return {currentProject:'所有项目',dataItem:[],today:{yyyyMM:"",dd:"",eeee:""},avatar:window.User.avatar}
         },
         mounted () {
            this.getAllMyProject ();
@@ -180,13 +185,18 @@
             },
             onSelectProject (t,d) {
                 this.currentProject = t;
-                //console.info(t,d);
+                var topid = (d == undefined) ? "" : "/" + d;
+                this.$router.push({ path: '/prod' +  topid});    
+                this.$refs.objectives.load();            
             },
             getAllMyProject () {
                 this.$http.get(this.Const.ApiURL + "/api/project").then((result)=>{
+                    this.dataItem.splice(0,this.dataItem.length);
                     for(var data in result.data) {
                         this.dataItem.push(result.data[data]);
                     }
+                },(result)=>{
+                    this.$router.push({ path: '/' });
                 });
             },
             getSchedule () {

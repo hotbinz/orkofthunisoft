@@ -7,7 +7,7 @@ const routers = [
         component: (resolve) => require(['./views/index.vue'], resolve)
     },
     {
-        path: '/prod',
+        path: '/prod/:projectid?/:parentid*',
         meta: {
             title: '我的OKR',
             auth:true

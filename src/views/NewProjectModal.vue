@@ -34,6 +34,7 @@
                      this.state = false;
                      this.formItem.cname="";
                      this.$Message.success('添加成功');
+                     Hub.$emit('reloadproject');
                 },(result)=>{                    
                     this.error = true;
                     this.$Modal.remove();

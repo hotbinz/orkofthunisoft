@@ -11,14 +11,13 @@ import 'iview/dist/styles/iview.css';
 Vue.use(VueRouter);
 Vue.use(VueResource);
 Vue.use(iView);
-
-var state = {
-    isLogin : '100'
-}
-
 //基础配置
 Vue.prototype.Const = {
     ApiURL : "/OKRsThunisoft"
+}
+window.User = {
+    isLogin : '101',
+    avatar : ""
 }
 
 // 路由配置
@@ -34,11 +33,11 @@ router.beforeEach((to, from, next) => {
     Util.title(to.meta.title);
     //是否登录验证
     if(to.matched.some(m=>m.meta.auth)) {
-        if(state.isLogin == "100") {
+        if(window.User.isLogin == "200") {
             next();
         }
         else {
-            next({path:'/login',query:{Rurl:to.fullPath}});
+            next({path:'/',query:{Rurl:to.fullPath}});
         }
     }
     else {
@@ -56,4 +55,3 @@ var vue = new Vue({
     router: router,
     render: h => h(App)
 });
-state.isLogin == "100";

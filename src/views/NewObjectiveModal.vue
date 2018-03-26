@@ -8,7 +8,10 @@
         @on-cancel="cancel"
         @on-ok="asyncOK">
         <Form :model="formItem" ref="objectiveForm" :label-width="80" :rules="ruleValidate">
-            <FormItem label="名称" prop="cname">
+            <FormItem label="任务线" prop="pname">
+                <Input v-model="formItem.pname" placeholder="请选择任务线"></Input>
+            </FormItem>
+            <FormItem label="任务名称" prop="cname">
                 <Input v-model="formItem.cname" placeholder="请输入名称"></Input>
             </FormItem>
             <FormItem label="完成日期" prop="dcomplateDate">
@@ -38,6 +41,9 @@
                 formItem: {
                 },
                 ruleValidate: {
+                    pname: [
+                        { required: true, message: '任务线不能为空', trigger: 'blur' }
+                    ],
                     cname: [
                         { required: true, message: '名称不能为空', trigger: 'blur' }
                     ],
